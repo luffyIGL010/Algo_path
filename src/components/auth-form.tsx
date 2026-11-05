@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type AuthMode = "signin" | "signup";
 
 export function AuthForm() {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("signin");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +49,7 @@ export function AuthForm() {
           type: "sms",
         });
         if (authError) throw authError;
-        window.location.assign("/");
+        router.replace("/");
         return;
       }
 
@@ -70,7 +72,7 @@ export function AuthForm() {
         });
         if (authError) throw authError;
         if (data.session) {
-          window.location.assign("/");
+          router.replace("/");
           return;
         }
         setMessage("Check your inbox for a confirmation link to finish creating your account.");
@@ -80,7 +82,7 @@ export function AuthForm() {
           password,
         });
         if (authError) throw authError;
-        window.location.assign("/");
+        router.replace("/");
       }
     } catch (authError) {
       setError(authError instanceof Error ? authError.message : "Authentication failed. Please try again.");

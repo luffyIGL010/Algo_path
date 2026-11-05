@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { problems, problemTypeLabels, type Difficulty, type Problem, type ProblemType } from "@/lib/problems";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -12,12 +13,12 @@ const difficultyFilters: DifficultyFilter[] = ["All levels", "Easy", "Medium", "
 
 function LogoMark() {
   return (
-    <a className="brand" href="/" aria-label="AlgoPath home">
+    <Link className="brand" href="/" aria-label="AlgoPath home">
       <span className="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 28 28"><path d="M14 3.5 24.5 22H3.5L14 3.5Z" /><path d="M14 11v5m0 3.5v.1" /></svg>
       </span>
       <span>algo<span className="brand-accent">path</span></span>
-    </a>
+    </Link>
   );
 }
 
@@ -95,8 +96,8 @@ export function ProblemLibrary() {
         <div className="topbar-inner">
           <LogoMark />
           <nav className="main-nav" aria-label="Main navigation">
-            <a className="nav-link nav-link-active" href="/">Problems</a>
-            <a className="nav-link" href="/login">My progress</a>
+            <Link className="nav-link nav-link-active" href="/">Problems</Link>
+            <Link className="nav-link" href="/login">My progress</Link>
           </nav>
           <div className="topbar-actions">
             <div className="streak-pill" title="Your daily streak">
@@ -105,9 +106,9 @@ export function ProblemLibrary() {
               <span className="streak-caption">day streak</span>
             </div>
             <ThemeToggle />
-            <a className="avatar-link" href="/login" aria-label="Sign in">
+            <Link className="avatar-link" href="/login" aria-label="Sign in">
               <span className="avatar">A</span>
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -124,7 +125,7 @@ export function ProblemLibrary() {
               <svg viewBox="0 0 44 44"><path d="M8 33V20m9 13V12m9 21V17m9 16V7" /><path d="m7 15 10-6 9 4 11-8" /></svg>
             </div>
             <div><strong>Your progress</strong><span>Sign in to track your journey</span></div>
-            <a href="/login" aria-label="Sign in to track progress">↗</a>
+            <Link href="/login" aria-label="Sign in to track progress">↗</Link>
           </div>
         </section>
 
@@ -234,7 +235,7 @@ export function ProblemLibrary() {
       <footer className="site-footer">
         <LogoMark />
         <span>Make progress, one problem at a time.</span>
-        <a href="/login">Sign in to save your progress <span>→</span></a>
+        <Link href="/login">Sign in to save your progress <span>→</span></Link>
       </footer>
       {selectedProblem && <ProblemPreview problem={selectedProblem} onClose={() => setSelectedProblem(null)} />}
     </main>

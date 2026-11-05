@@ -1,23 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
+
+const themeChangeEvent = "algopath-theme-change";
+
+function getThemeSnapshot() {
+  if (typeof window === "undefined") return false;
+  const stored = window.localStorage.getItem("algopath-theme");
+  return stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function subscribeToTheme(callback: () => void) {
+  window.addEventListener(themeChangeEvent, callback);
+  return () => window.removeEventListener(themeChangeEvent, callback);
+}
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+  const dark = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => false);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("algopath-theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const nextDark = stored ? stored === "dark" : prefersDark;
-    setDark(nextDark);
-    document.documentElement.dataset.theme = nextDark ? "dark" : "light";
-  }, []);
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+  }, [dark]);
 
   function toggleTheme() {
     const nextDark = !dark;
-    setDark(nextDark);
-    document.documentElement.dataset.theme = nextDark ? "dark" : "light";
     window.localStorage.setItem("algopath-theme", nextDark ? "dark" : "light");
+    window.dispatchEvent(new Event(themeChangeEvent));
   }
 
   return (
