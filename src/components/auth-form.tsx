@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type AuthMode = "signin" | "signup";
@@ -25,6 +25,10 @@ export function AuthForm() {
     setMessage("");
     if (!supabaseConfigured) {
       setError("Supabase is not configured yet. Add your project URL and anon key to .env.local.");
+      return;
+    }
+    if (!isPhone && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier.trim())) {
+      setError("Enter a valid email address or a mobile number with country code.");
       return;
     }
 
@@ -59,12 +63,16 @@ export function AuthForm() {
       }
 
       if (mode === "signup") {
-        const { error: authError } = await supabase.auth.signUp({
+        const { data, error: authError } = await supabase.auth.signUp({
           email: identifier.trim(),
           password,
           options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
         });
         if (authError) throw authError;
+        if (data.session) {
+          window.location.assign("/");
+          return;
+        }
         setMessage("Check your inbox for a confirmation link to finish creating your account.");
       } else {
         const { error: authError } = await supabase.auth.signInWithPassword({
