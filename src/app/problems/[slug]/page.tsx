@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { isAuthSessionMissingError } from "@supabase/supabase-js";
 import { CodeWorkspace } from "@/components/code-workspace";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -23,6 +24,7 @@ export default function ProblemPage({ params }: ProblemPageProps) {
 }
 
 async function ProblemContent({ params }: ProblemPageProps) {
+  await connection();
   const { slug } = await params;
   const supabase = await createClient();
 

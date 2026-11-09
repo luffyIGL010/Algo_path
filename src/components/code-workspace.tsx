@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { submitSolution } from "@/app/problems/[slug]/actions";
 import {
   submissionLanguages,
@@ -42,6 +42,20 @@ export function CodeWorkspace({
   const [language, setLanguage] = useState<SubmissionLanguage>("python");
   const [drafts, setDrafts] = useState<Record<SubmissionLanguage, string>>(starterCode);
   const [state, formAction, pending] = useActionState(submitSolution, initialState);
+  const codeEditorRef = useRef<HTMLTextAreaElement>(null);
+
+  function indentCode() {
+    const editor = codeEditorRef.current;
+    if (!editor) return;
+
+    const { selectionStart, selectionEnd } = editor;
+    const code = drafts[language];
+    const updatedCode = `${code.slice(0, selectionStart)}    ${code.slice(selectionEnd)}`;
+    setDrafts((current) => ({ ...current, [language]: updatedCode }));
+    requestAnimationFrame(() => {
+      editor.setSelectionRange(selectionStart + 4, selectionStart + 4);
+    });
+  }
 
   return (
     <section className="workspace-editor-card" aria-labelledby="editor-title">
@@ -72,10 +86,17 @@ export function CodeWorkspace({
         <label className="visually-hidden" htmlFor="solution-code">Solution code</label>
         <textarea
           id="solution-code"
+          ref={codeEditorRef}
           className="code-editor"
           name="code"
           value={drafts[language]}
           onChange={(event) => setDrafts((current) => ({ ...current, [language]: event.target.value }))}
+          onKeyDown={(event) => {
+            if (event.key === "Tab") {
+              event.preventDefault();
+              indentCode();
+            }
+          }}
           maxLength={50_000}
           spellCheck={false}
           autoCapitalize="off"
