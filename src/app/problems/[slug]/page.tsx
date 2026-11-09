@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CodeWorkspace } from "@/components/code-workspace";
@@ -9,22 +10,30 @@ type ProblemPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export default async function ProblemPage({ params }: ProblemPageProps) {
+export default function ProblemPage({ params }: ProblemPageProps) {
+  return (
+    <main className="app-shell">
+      <WorkspaceHeader />
+      <Suspense fallback={<WorkspaceLoading />}>
+        <ProblemContent params={params} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function ProblemContent({ params }: ProblemPageProps) {
   const { slug } = await params;
   const supabase = await createClient();
 
   if (!supabase) {
     return (
-      <main className="app-shell">
-        <WorkspaceHeader />
-        <div className="workspace-content">
-          <Link className="workspace-back" href="/">← All problems</Link>
-          <section className="workspace-notice">
-            <h1>Workspace unavailable</h1>
-            <p>Supabase is not configured. Add its URL and anon key to .env.local, then reload.</p>
-          </section>
-        </div>
-      </main>
+      <div className="workspace-content">
+        <Link className="workspace-back" href="/">← All problems</Link>
+        <section className="workspace-notice">
+          <h1>Workspace unavailable</h1>
+          <p>Supabase is not configured. Add its URL and anon key to .env.local, then reload.</p>
+        </section>
+      </div>
     );
   }
 
@@ -64,39 +73,44 @@ export default async function ProblemPage({ params }: ProblemPageProps) {
   }
 
   return (
-    <main className="app-shell">
-      <WorkspaceHeader />
-      <div className="workspace-content">
-        <Link className="workspace-back" href="/">← All problems</Link>
-        <div className="workspace-heading">
-          <div>
-            <span className="eyebrow"><span className="eyebrow-line" />DSA WORKSPACE</span>
-            <h1>{problem.title}</h1>
-          </div>
-          <span className={`difficulty ${problem.difficulty.toLowerCase()}`}>{problem.difficulty}</span>
+    <div className="workspace-content">
+      <Link className="workspace-back" href="/">← All problems</Link>
+      <div className="workspace-heading">
+        <div>
+          <span className="eyebrow"><span className="eyebrow-line" />DSA WORKSPACE</span>
+          <h1>{problem.title}</h1>
         </div>
-
-        <div className="workspace-grid">
-          <section className="workspace-card" aria-labelledby="statement-title">
-            <div className="workspace-card-heading">
-              <span className="workspace-step">01</span>
-              <h2 id="statement-title">Problem</h2>
-            </div>
-            <p className="workspace-statement">{problem.statement}</p>
-            <div className="workspace-scope-note">
-              <strong>Submission queue</strong>
-              <span>Solutions are saved privately. Code execution and verdicts are not enabled in this phase.</span>
-            </div>
-          </section>
-
-          <CodeWorkspace
-            slug={problem.slug}
-            authenticated={Boolean(user)}
-            submissions={submissions}
-          />
-        </div>
+        <span className={`difficulty ${problem.difficulty.toLowerCase()}`}>{problem.difficulty}</span>
       </div>
-    </main>
+
+      <div className="workspace-grid">
+        <section className="workspace-card" aria-labelledby="statement-title">
+          <div className="workspace-card-heading">
+            <span className="workspace-step">01</span>
+            <h2 id="statement-title">Problem</h2>
+          </div>
+          <p className="workspace-statement">{problem.statement}</p>
+          <div className="workspace-scope-note">
+            <strong>Submission queue</strong>
+            <span>Solutions are saved privately. Code execution and verdicts are not enabled in this phase.</span>
+          </div>
+        </section>
+
+        <CodeWorkspace
+          slug={problem.slug}
+          authenticated={Boolean(user)}
+          submissions={submissions}
+        />
+      </div>
+    </div>
+  );
+}
+
+function WorkspaceLoading() {
+  return (
+    <div className="workspace-content" aria-busy="true">
+      <p className="workspace-loading">Loading problem workspace…</p>
+    </div>
   );
 }
 
