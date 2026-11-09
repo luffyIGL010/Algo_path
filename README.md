@@ -1,6 +1,6 @@
 # AlgoPath
 
-AlgoPath is an interview-practice app for DSA, SQL, and system design. This repository currently implements **Phase 1**: Supabase authentication, the responsive problem library, and the initial database schema and seed catalog.
+AlgoPath is an interview-practice app for DSA, SQL, and system design. This repository implements **Phase 1** (Supabase authentication, the responsive problem library, and the initial database schema and seed catalog) and the Phase 2 DSA workspace with a private submission queue.
 
 ## Requirements
 
@@ -53,6 +53,17 @@ The local Supabase configuration enables email sign-up and phone OTP. The phone 
 - Configure an SMS provider and phone sign-in in Supabase Auth.
 - Set the hosted project URL and public anon key in `.env.local`.
 
+For local GitHub OAuth, add `SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET` to `.env.local`, then export them in the shell before starting Supabase:
+
+```sh
+set -a
+source .env.local
+set +a
+npx supabase start
+```
+
+Restart Supabase after changing these values. The GitHub OAuth app callback URL for the local stack is `http://127.0.0.1:54321/auth/v1/callback`.
+
 Do not expose a Supabase service-role key in the browser or in `NEXT_PUBLIC_*` variables.
 
 ## Docker
@@ -89,9 +100,24 @@ npm run build
 ## Project layout
 
 - `src/app/`: App Router pages and the OAuth callback.
-- `src/components/`: Library and authentication UI.
+- `src/app/problems/[slug]/`: DSA workspace and authenticated submission action.
+- `src/components/`: Library, authentication, and code workspace UI.
 - `src/lib/supabase/`: Browser and server Supabase clients.
+- `src/lib/submissions.ts`: Supported submission languages and queue types.
 - `supabase/migrations/`: PostgreSQL tables, indexes, profile trigger, and RLS policies.
 - `supabase/seed.sql`: 20 DSA, 18 SQL, and 8 system design questions; company tags; system design rubrics; and visualizer traces for the first 10 DSA problems.
 
-Phase 2 will add the DSA editor and asynchronous judging pipeline. No code execution, SQL sandbox, or AI evaluation is part of this phase.
+## Phase 2: DSA workspace and submissions
+
+- Open a DSA problem from its preview to view the statement and edit a Python, JavaScript, Java, or C++ solution.
+- Signed-in users can queue submissions; they are stored with owner-only RLS and shown in the problem's recent submissions.
+- This phase stores submissions only. No code is executed, no verdict is produced, and no SQL sandbox or AI evaluation is included.
+- SQL and system-design workspaces remain out of scope.
+
+### Phase 2 manual test checklist
+
+- Open a DSA problem from the library and verify its title and statement.
+- Switch languages, edit the starter solution, and check that switching back preserves each language's draft while the page remains open.
+- While signed in, queue a non-empty solution and verify it appears as queued; confirm the UI says it was not run or scored.
+- Reload and verify the submission appears in recent submissions for the signed-in user.
+- Sign out and confirm submission history is not shown and submissions cannot be queued.
