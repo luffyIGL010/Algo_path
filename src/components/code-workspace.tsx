@@ -19,6 +19,10 @@ const starterCode: Record<SubmissionLanguage, string> = {
 
 const initialState: SubmissionActionState = {};
 
+function isSubmissionLanguage(value: string): value is SubmissionLanguage {
+  return submissionLanguages.some((language) => language.value === value);
+}
+
 function submissionStatus(submission: SubmissionSummary) {
   if (submission.verdict) {
     return submission.verdict.replaceAll("_", " ");
@@ -53,7 +57,11 @@ export function CodeWorkspace({
             id="solution-language"
             name="language"
             value={language}
-            onChange={(event) => setLanguage(event.target.value as SubmissionLanguage)}
+            onChange={(event) => {
+              if (isSubmissionLanguage(event.target.value)) {
+                setLanguage(event.target.value);
+              }
+            }}
           >
             {submissionLanguages.map((item) => (
               <option value={item.value} key={item.value}>{item.label}</option>
