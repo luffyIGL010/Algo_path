@@ -91,7 +91,7 @@ export function AuthForm() {
     }
   }
 
-  async function signInWith(provider: "google" | "github") {
+  async function signInWithGitHub() {
     setError("");
     if (!supabaseConfigured) {
       setError("Supabase is not configured yet. Add your project URL and anon key to .env.local.");
@@ -105,7 +105,7 @@ export function AuthForm() {
     setBusy(true);
     try {
       const { error: authError } = await supabase.auth.signInWithOAuth({
-        provider,
+        provider: "github",
         options: { redirectTo: `${window.location.origin}/auth/callback` },
       });
       if (authError) throw authError;
@@ -163,11 +163,7 @@ export function AuthForm() {
           </div>
 
           <div className="social-buttons">
-            <button type="button" className="social-button" onClick={() => signInWith("google")} disabled={busy}>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#4285F4" d="M19.6 10.2c0-.7-.1-1.3-.2-2H10v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.8 3-4.3 3-7.3Z" /><path fill="#34A853" d="M10 20c2.7 0 5-.9 6.7-2.5l-3.2-2.5c-.9.6-2 1-3.5 1-2.7 0-5-1.8-5.8-4.3H1v2.6A10 10 0 0 0 10 20Z" /><path fill="#FBBC05" d="M4.2 11.7A6 6 0 0 1 4 10c0-.6.1-1.2.2-1.7V5.7H1A10 10 0 0 0 0 10c0 1.6.4 3 1 4.3l3.2-2.6Z" /><path fill="#EA4335" d="M10 4c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.6 9.6 0 0 0 10 0a10 10 0 0 0-9 5.7l3.2 2.6C5 5.8 7.3 4 10 4Z" /></svg>
-              Continue with Google
-            </button>
-            <button type="button" className="social-button" onClick={() => signInWith("github")} disabled={busy}>
+            <button type="button" className="social-button" onClick={signInWithGitHub} disabled={busy}>
               <svg className="github-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.5 21.6c.6.1.8-.2.8-.6v-2.1c-3.1.7-3.8-1.3-3.8-1.3-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.5 3.3 4.8 2.3.1-.7.4-1.3.7-1.6-2.5-.3-5.2-1.3-5.2-5.5 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.5.1-3 0 0 .9-.3 3.1 1.1a10.7 10.7 0 0 1 5.7 0c2.2-1.4 3.1-1.1 3.1-1.1.6 1.5.2 2.7.1 3 .7.8 1.1 1.8 1.1 3 0 4.2-2.7 5.2-5.2 5.5.4.4.8 1 .8 2v3c0 .4.2.7.8.6A11.1 11.1 0 0 0 12 .9Z" /></svg>
               Continue with GitHub
             </button>

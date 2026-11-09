@@ -58,8 +58,17 @@ function ProblemPreview({ problem, onClose }: { problem: Problem; onClose: () =>
           <div className="company-pills">{problem.companies.map((company) => <span className="company-pill" key={company}>{company}</span>)}</div>
         </div>
         <div className="preview-footer">
-          <span className="coming-soon"><span />Workspace unlocks in the next phase</span>
-          <button className="button button-primary" type="button" onClick={onClose}>Got it</button>
+          {problem.type === "dsa" ? (
+            <>
+              <span className="coming-soon"><span />DSA workspace is ready</span>
+              <Link className="button button-primary" href={`/problems/${problem.slug}`}>Start solving <span>→</span></Link>
+            </>
+          ) : (
+            <>
+              <span className="coming-soon"><span />Workspace unlocks in a later phase</span>
+              <button className="button button-primary" type="button" onClick={onClose}>Got it</button>
+            </>
+          )}
         </div>
       </section>
     </div>

@@ -245,7 +245,7 @@ html[data-theme="dark"] .showcase-preview { border-color: #3c5140; background: r
 .auth-overline { color: var(--green); font-size: 8px; font-weight: 700; letter-spacing: 1.25px; }
 .auth-heading h2 { margin: 9px 0 6px; font-size: 26px; font-weight: 600; letter-spacing: -1px; line-height: 1.2; }
 .auth-heading p { margin: 0; color: var(--muted); font-size: 11px; }
-.social-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.social-buttons { display: grid; grid-template-columns: 1fr; gap: 9px; }
 .social-button { min-height: 39px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 9px; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--surface); color: var(--foreground); cursor: pointer; font-size: 10px; font-weight: 600; transition: background .16s; }
 .social-button:hover { background: var(--surface-soft); }
 .social-button:disabled { opacity: .6; cursor: wait; }
