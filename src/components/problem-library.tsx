@@ -48,9 +48,9 @@ function ProblemPreview({ problem, onClose }: { problem: Problem; onClose: () =>
         </div>
         <p className="preview-copy">
           {problem.type === "dsa"
-            ? `Practice ${problem.title.toLowerCase()} with clear examples, progressive hints, and a focused workspace. Your hidden test cases stay private until you submit.`
+            ? `Practice ${problem.title.toLowerCase()} in the DSA workspace. Submissions are stored privately; code execution is not enabled in this phase.`
             : problem.type === "sql"
-              ? `Write a query for ${problem.title.toLowerCase()} against a realistic dataset. Sample tables and expected output are available in the SQL workspace.`
+              ? `Practice ${problem.title.toLowerCase()} with a focused SQL workspace. SQL workspaces will be added in a later phase.`
               : `Design a robust ${problem.title.toLowerCase().replace("design a ", "")}. Organize your requirements, API, data model, architecture, scaling plan, and trade-offs.`}
         </p>
         <div className="preview-companies">

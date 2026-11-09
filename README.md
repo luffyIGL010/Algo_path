@@ -49,7 +49,7 @@ Open [http://localhost:3000](http://localhost:3000). Supabase Studio is availabl
 The local Supabase configuration enables email sign-up and phone OTP. The phone provider in local development uses Supabase's local test flow; inspect the Auth logs or Studio to retrieve test OTPs. For a hosted Supabase project:
 
 - Add the app origin and `/auth/callback` to the Supabase Auth redirect URL allow-list.
-- Configure Google and GitHub OAuth credentials in Supabase Auth.
+- Configure GitHub OAuth credentials in Supabase Auth.
 - Configure an SMS provider and phone sign-in in Supabase Auth.
 - Set the hosted project URL and public anon key in `.env.local`.
 
@@ -94,7 +94,7 @@ npm run build
 - Open a problem preview from a row and close it with the button or backdrop.
 - Toggle light/dark mode and reload to verify the preference persists.
 - At `/login`, try email sign-up/sign-in and phone OTP using a configured local or hosted Supabase project.
-- Test Google and GitHub OAuth after adding provider credentials; confirm each returns through `/auth/callback`.
+- Test GitHub OAuth after adding provider credentials; confirm it returns through `/auth/callback`.
 - After sign-up, verify a profile row is created. As an unauthenticated user, confirm hidden test data, submissions, and other users' progress are not readable through Supabase.
 
 ## Project layout
