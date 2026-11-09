@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { isAuthSessionMissingError } from "@supabase/supabase-js";
 import { CodeWorkspace } from "@/components/code-workspace";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { createClient } from "@/lib/supabase/server";
@@ -52,16 +53,17 @@ async function ProblemContent({ params }: ProblemPageProps) {
   }
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError) {
+  if (authError && !isAuthSessionMissingError(authError)) {
     throw new Error(`Could not verify the current session: ${authError.message}`);
   }
 
+  const currentUser = authError ? null : user;
   let submissions: SubmissionSummary[] = [];
-  if (user) {
+  if (currentUser) {
     const { data, error: submissionsError } = await supabase
       .from("submissions")
       .select("id, status, verdict, language, created_at")
-      .eq("user_id", user.id)
+      .eq("user_id", currentUser.id)
       .eq("problem_id", problem.id)
       .order("created_at", { ascending: false })
       .limit(10);
@@ -98,7 +100,7 @@ async function ProblemContent({ params }: ProblemPageProps) {
 
         <CodeWorkspace
           slug={problem.slug}
-          authenticated={Boolean(user)}
+          authenticated={Boolean(currentUser)}
           submissions={submissions}
         />
       </div>

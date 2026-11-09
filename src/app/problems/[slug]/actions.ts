@@ -1,5 +1,6 @@
 "use server";
 
+import { isAuthSessionMissingError } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { submissionLanguages, type SubmissionActionState } from "@/lib/submissions";
 
@@ -35,7 +36,7 @@ export async function submitSolution(
   }
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError) {
+  if (authError && !isAuthSessionMissingError(authError)) {
     return { error: `Could not verify your session: ${authError.message}` };
   }
   if (!user) {
